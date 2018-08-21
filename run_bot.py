@@ -19,7 +19,7 @@ def can_toggle_bot_enabled(user: Member):
     return user.id == '175734927273361408'
 
 
-def is_mentioned(id_, msg):
+def is_mentioned(msg, id_):
     return any(m.id == id_ for m in msg.mentions)
 
 
@@ -36,12 +36,12 @@ async def on_ready():
 async def on_message(msg: Message):
     global last_dynamic_time
 
-    if not enabled and not (msg.content.startswith('!on') or msg.content.startswith('!off')):
+    if not enabled and not any(map(msg.content.startswith, ('!on', '!off', '!ping'))):
         return
 
     await bot.process_commands(msg)
 
-    if is_mentioned(dynamic_trigger_id, msg) and time_passed_from(last_dynamic_time, dynamic_interval_seconds):
+    if is_mentioned(msg, dynamic_trigger_id) and time_passed_from(last_dynamic_time, dynamic_interval_seconds):
         last_dynamic_time = datetime.now()
         await bot.send_message(msg.channel, dynamic_resp)
 
@@ -62,11 +62,11 @@ async def cmd_rip_mod(*ignored):
 @bot.command('on', pass_context=True)
 async def cmd_on(ctx, *ignored):
     global enabled
-    enabled = True
 
     if not can_toggle_bot_enabled(ctx.message.author):
         return await bot.reply('only Axiom_Infinite can use this command')
 
+    enabled = True
     await bot.say('bot has been enabled')
 
 
@@ -78,8 +78,12 @@ async def cmd_off(ctx, *ignored):
         return await bot.reply('only Axiom_Infinite can use this command')
 
     enabled = False
-
     await bot.say('bot has been disabled')
+
+
+@bot.command('ping')
+async def cmd_ping(*ignored):
+    await bot.say(f'PONG! enabled? {enabled}')
 
 
 bot.run(cfg.oauth)
