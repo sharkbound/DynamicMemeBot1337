@@ -1,7 +1,9 @@
+from datetime import datetime
+
 from discord import Message, Member
 from discord.ext.commands import Bot, when_mentioned_or, Context
+
 from data import cfg
-from datetime import datetime, timedelta
 
 bot = Bot(when_mentioned_or(cfg.command_prefix))
 
@@ -61,12 +63,14 @@ async def cmd_rip_mod(*ignored):
 
 @bot.command('on', pass_context=True)
 async def cmd_on(ctx, *ignored):
-    global enabled
+    global enabled, last_dynamic_time
 
     if not can_toggle_bot_enabled(ctx.message.author):
         return await bot.reply('only Axiom_Infinite can use this command')
 
     enabled = True
+    last_dynamic_time = datetime.min
+
     await bot.say('bot has been enabled')
 
 
