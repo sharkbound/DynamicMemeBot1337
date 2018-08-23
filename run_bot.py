@@ -1,7 +1,7 @@
 from datetime import datetime
-
 from discord import Message, Member
 from discord.ext.commands import Bot, when_mentioned_or, Context
+from random import choice
 
 from data import cfg
 
@@ -12,7 +12,13 @@ last_dynamic_time: datetime = datetime.min
 dynamic_interval_seconds = 3600
 
 dynamic_trigger_id = '253452911722364928'
-dynamic_resp = 'dynamic is best type, it should be the only type in C#'
+dynamic_responses = [
+    'dynamic is best type, it should be the only type in C#',
+    'everyone needs little more dynamic in their life',
+    'dynamic is love, dynamic is life',
+    'who needs a logically structured program when you have dynamic',
+    'dynamic is every type in one, so therefore its the best type'
+]
 
 enabled = True
 
@@ -45,7 +51,7 @@ async def on_message(msg: Message):
 
     if is_mentioned(msg, dynamic_trigger_id) and time_passed_from(last_dynamic_time, dynamic_interval_seconds):
         last_dynamic_time = datetime.now()
-        await bot.send_message(msg.channel, dynamic_resp)
+        await bot.send_message(msg.channel, choice(dynamic_responses))
 
 
 @bot.command('nick', pass_context=True)
