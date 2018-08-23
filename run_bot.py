@@ -1,5 +1,5 @@
 from datetime import datetime
-from discord import Message, Member
+from discord import Message, Member, Game
 from discord.ext.commands import Bot, when_mentioned_or, Context
 from random import choice
 
@@ -35,9 +35,14 @@ def time_passed_from(dt, time):
     return (datetime.now() - dt).total_seconds() >= time
 
 
+async def set_bot_status(status):
+    await bot.change_presence(game=Game(name=status))
+
+
 @bot.event
 async def on_ready():
     print(f'logged in as {bot.user.name}')
+    await set_bot_status("status: Enabled")
 
 
 @bot.event
@@ -62,11 +67,6 @@ async def cmd_nick(ctx: Context, nick=None):
     await bot.change_nickname(ctx.message.server.get_member(bot.user.id), nick)
 
 
-@bot.command('ripmod')
-async def cmd_rip_mod(*ignored):
-    await bot.say('Master Yi is skillful champ')
-
-
 @bot.command('on', pass_context=True)
 async def cmd_on(ctx, *ignored):
     global enabled, last_dynamic_time
@@ -77,6 +77,7 @@ async def cmd_on(ctx, *ignored):
     enabled = True
     last_dynamic_time = datetime.min
 
+    await set_bot_status("status: Enabled")
     await bot.say('bot has been enabled')
 
 
@@ -88,12 +89,14 @@ async def cmd_off(ctx, *ignored):
         return await bot.reply('only Axiom_Infinite can use this command')
 
     enabled = False
+
+    await set_bot_status("status: Disabled")
     await bot.say('bot has been disabled')
 
 
 @bot.command('ping')
 async def cmd_ping(*ignored):
-    await bot.say(f'PONG! enabled? {enabled}')
+    await bot.say(f'PONG!')
 
 
 bot.run(cfg.oauth)
