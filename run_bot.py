@@ -19,7 +19,7 @@ dynamic_responses = [
     'who needs a logically structured program when you have dynamic',
     'dynamic is every type in one, so therefore its the best type',
     'once you taste dynamic, you will never go back',
-    'roses are read\nviolets are blue\ndynamic exists\nand its every type too',
+    'roses are red\nviolets are blue\ndynamic exists\nand its every type too',
 ]
 
 enabled = True
